@@ -1,0 +1,62 @@
+//Create Sheet on Form Submission
+//This code generates a new sheet automatically on a form submission, and can fill in form details as needed.
+//Steps:
+//1) Create a Google Form and connect to a Google Sheet (or vice versa)
+//2) Go to Tools->Script Editor
+//3) Paste this code and personalize
+//4) Save sheet
+//5) Under Triggers, set "onFormSubmit" to run, and event type to "on form fubmit"
+//6) Test with a new form submission!
+
+
+//Runs createSheet every time there is a new form submission
+function onFormSubmit(e){
+  var formValues = e.values;
+  createSheet(formValues);
+}
+
+//Creates a new sheet/tab 
+function createSheet(formValues){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var inSheet = false;
+
+  //Replace 1 with the form response you'd like to name the new sheet after
+  inSheet = isInSheet(ss, formValues[1], inSheet);
+
+  //If there is a sheet already named after the chosen form response, a new tab is created with that respone followed by the word "copy"
+  if(inSheet){
+    //Replace 1 with the form response you'd like to name the new sheet after
+    var create = ss.insertSheet(formValues[1]+" copy");//create a new sheet with the value
+    fillSheet(create, formValues);
+  }
+  //If there isn't a sheet already named after the form response, proceed with creating the new sheet
+  else{
+    //Replace 1 with the form response you'd like to name the new sheet after
+    var create = ss.insertSheet(formValues[1]);
+    fillSheet(create, formValues);
+  } 
+
+
+}
+
+//Determines if there is already a sheet named after the value taken from the form response; returns true or false
+function isInSheet(ss, tabName, inSheet) {
+  for(var j=0; j<ss.getNumSheets(); j++){
+
+        if(ss.getSheets()[j].getName()==tabName){
+          inSheet = true;
+          break;
+        }
+      }
+  return inSheet;
+}
+
+//Fill new sheet with information from form responses
+function fillSheet(create, formValues){
+  create.getRange(1,1).setValue("INSERT CAPTION 1");
+  create.getRange(1,2).setValue(formValues[1]);
+  //create.getRange(2,1).setValue("INSERT CAPTION 2");
+  //create.getRange(2,2).setValue(formValues[2]);
+  //etc.
+}
+
